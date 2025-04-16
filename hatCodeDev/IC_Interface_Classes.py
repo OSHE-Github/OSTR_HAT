@@ -1,8 +1,11 @@
 #from w1thermsensor import W1ThermSensor, Unit
-from gpiozero import Servo
-from mpu6050 import MPU6050
+
 from smbus2 import SMBus
 import time
+
+# use mpu6050 library for IMU. Documentation for that library has good example code
+
+# for servos use: from gpiozero import Servo
 
 ## Temp sensor
 # Run "sudo dtoverlay w1-gpio gpiopin=4" to enable 1-wire
@@ -204,82 +207,20 @@ print("\nmotor0 init")
 motor0 = motorDriver(pwmexpander, M0P1, M0P2)
 print("\nmotor1 init")
 motor1 = motorDriver(pwmexpander, M1P1, M1P2)
-#print("\nservo6 init")
-#servo6 = Servo(13)
 
-
-#print("\nIMU Init")
-# Make an MPU6050
-#mpu = MPU6050(1, ADDRIMU, freq_divider)
-#print(mpu)
-# Initiate your DMP
-#mpu.dmp_initialize()
-#mpu.set_DMP_enabled(True)
-
-#packet_size = mpu.DMP_get_FIFO_packet_size()
-#FIFO_buffer = [0]*64
-
-#print("Temp sensor init:")
-#tempSensor = W1ThermSensor()
-
-# Enter while loop with example functions
-while True:
-
-    ## IMU -- Copied from example code in mpu6050 library
-#    # Read from IMU
-#    if mpu.isreadyFIFO(packet_size): # Check if FIFO data are ready to use...
-#        FIFO_buffer = mpu.get_FIFO_bytes(packet_size) # get all the DMP data here
-#        q = mpu.DMP_get_quaternion_int16(FIFO_buffer)
-#        grav = mpu.DMP_get_gravity(q)
-#        roll_pitch_yaw = mpu.DMP_get_euler_roll_pitch_yaw(q)
-#
-#        print('roll: ' + str(roll_pitch_yaw.x))
-#        print('pitch: ' + str(roll_pitch_yaw.y))
-#        print('yaw: ' + str(roll_pitch_yaw.z))
-#
-#        # raw acceleration
-#        accel = mpu.get_acceleration()
-#        accel.x = accel.x * 2*g / 2**15
-#        accel.y = accel.y * 2*g / 2**15
-#        accel.z = accel.z * 2*g / 2**15
-#        # quaternion
-#        q = mpu.DMP_get_quaternion_int16(FIFO_buffer)
-#        q.normalize()
-#        # world-frame acceleration vectors (practical for INS)
-#        accel_linear = mpu.get_linear_accel(accel, q)
-#        Ax_linear = round(accel_linear.x, 2)
-#        Ay_linear = round(accel_linear.y, 2)
-#        Az_linear = round(accel_linear.z, 2)
-#        print('linear Ax: ' + str(Ax_linear))
-#        print('linear Ay: ' + str(Ay_linear))
-#        print('linear Az: ' + str(Az_linear))
-#        print('\n')
-#    else:
-#        continue
     
-    
-    # Check battery voltage and motor currents
+# Check battery voltage and motor currents
 
-    # Start motor 0 at given duty (0-256)
-    #speed = int(input("M0: "))
-    #motor0.go(MDMFB, speed)
-    #speed = int(input("M1: "))
-    #motor1.go(MDMFB, speed)
-    # stop motor 0 with given stop mode
-    #stopmode = int(input("Stop Mode: "))
-    #motor0.stop(stopmode)
-    
-    #for i in range(100):
-    #    print(f"Battery V: {ADCBATTC * adc.read(7)}")
-    #    print(f"Motor0 ADC reading: {ADCM0OI * adc.read(0)}")
-    #    print(f"Motor1 ADC reading: {ADCM1OI * adc.read(1)}")
-    #    time.sleep(0.01)
+# Start motor 0 at given duty (0-256)
+speed = int(input("M0: "))
+motor0.go(MDMFB, speed)
+speed = int(input("M1: "))
+motor1.go(MDMFB, speed)
+# stop motor 0 with given stop mode
+stopmode = int(input("Stop Mode: "))
+motor0.stop(stopmode)
 
-    #rotate servo according to pi rotation
-    #servo6.value = roll_pitch_yaw.z / 180
-    #print(f"Servopos: {adc.read(2)}")
-    
-    # Read from temp sensor
-    #print(f"temp in C: {tempSensor.get_temperature()}")
-    print(f"VBatt: {adc.read(7)*ADCBATTC}, VFdbk: {adc.read(6)*ADCREF/255}")
-    time.sleep(5)
+# Take ADC readings of battery voltage and motor currents
+print(f"Battery V: {ADCBATTC * adc.read(7)}")
+print(f"Motor0 ADC reading: {ADCM0OI * adc.read(0)}")
+print(f"Motor1 ADC reading: {ADCM1OI * adc.read(1)}")
